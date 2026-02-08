@@ -5,10 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SugaNiga Cosmetics - Beauty with Confidence</title>
 
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  
+  <!-- GSAP for elite animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
    
   <style>
     /* Updated to French-style fonts and white theme */
@@ -52,6 +59,14 @@
       align-items: center;
       padding: 20px 5%;
       z-index: 1000;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    header.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      padding: 15px 5%;
     }
 
     header .logo {
@@ -302,6 +317,7 @@
       overflow: hidden;
       transition: all 0.3s ease;
       border: 1px solid #eee;
+      opacity: 1 !important;
     }
 
     .product-card:hover {
@@ -315,12 +331,21 @@
       background: #f5f5f5;
       position: relative;
       overflow: hidden;
+      display: block;
     }
 
     .product-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    .product-card:hover .product-image img {
+      transform: scale(1.08);
     }
 
     .part1{
@@ -348,6 +373,7 @@
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 600;
+      z-index: 2;
     }
 
     .product-info {
@@ -504,6 +530,117 @@
         min-width: 100%;
       }
     }
+
+    /* Elite Overlay Modal */
+    .product-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      z-index: 10000;
+      display: none;
+      opacity: 0;
+      overflow-y: auto;
+    }
+
+    .product-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay-content {
+      max-width: 1200px;
+      width: 90%;
+      padding: 60px;
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .overlay-image {
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .overlay-details {
+      padding: 40px;
+    }
+
+    .overlay-details h2 {
+      font-size: 3.5rem;
+      margin-bottom: 30px;
+      color: #333;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .overlay-details p {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .overlay-features {
+      list-style: none;
+      margin: 30px 0;
+    }
+
+    .overlay-features li {
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 1.1rem;
+      color: #555;
+    }
+
+    .overlay-features li:before {
+      content: '✓';
+      margin-right: 15px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .close-overlay {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #333;
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-overlay:hover {
+      background: #555;
+      transform: rotate(90deg);
+    }
+
+    @media (max-width: 768px) {
+      .overlay-content {
+        grid-template-columns: 1fr;
+        padding: 30px;
+      }
+      
+      .overlay-image {
+        height: 400px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -542,20 +679,34 @@
   <section id="products" class="section-light">
     <h2 style="text-align: center; font-size: 3rem; margin-bottom: 20px;">Shop by <span class="brand-span">Category</span></h2>
     <div class="category-grid">
-      <div class="category-card" onclick="filterProducts('lips')">
+      <div class="category-card" data-category="lips">
         <img src="https://static.wixstatic.com/media/c837a6_20d1709d18694123a24f11aad20d4060~mv2.png/v1/fill/w_569,h_741,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/mayagi_a_studio_beauty_photograph_close-up_shot_of_a_woman_with_aad50369-8133-40c2-b9b5-a3.png" alt="Lips">
         <h3>LIPS</h3>
       </div>
-      <div class="category-card" onclick="filterProducts('lashes')">
+      <div class="category-card" data-category="lashes">
         <img src="https://static.wixstatic.com/media/c837a6_29f10c9e1c52493681865f8930b037f8~mv2.jpg/v1/fill/w_569,h_741,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/camille-brodard-FTMPYMNw_zQ-unsplash.jpg" alt="Lashes">
         <h3>LASHES</h3>
       </div>
-      <div class="category-card" onclick="filterProducts('cheeks')">
+      <div class="category-card" data-category="cheeks">
         <img src="https://static.wixstatic.com/media/c837a6_359086c676a14cd2a80e742aefc1fa32~mv2.jpg/v1/fill/w_569,h_741,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AdobeStock_546816824_edited.jpg" alt="Cheeks">
         <h3>CHEEKS</h3>
       </div>
     </div>
   </section>
+
+  <!-- Product Overlay Modal -->
+  <div class="product-overlay" id="productOverlay">
+    <button class="close-overlay" onclick="closeOverlay()">×</button>
+    <div class="overlay-content">
+      <img class="overlay-image" id="overlayImage" src="" alt="">
+      <div class="overlay-details">
+        <h2 id="overlayTitle"></h2>
+        <p id="overlayDescription"></p>
+        <ul class="overlay-features" id="overlayFeatures"></ul>
+        <a href="#bestsellers" class="cta-button" onclick="closeOverlay()">Shop Now</a>
+      </div>
+    </div>
+  </div>
 
    <!-- Hero offer section inspired by reference -->
   <section class="hero-offer">
@@ -714,17 +865,325 @@
 
   <!-- JavaScript for all interactive functionality -->
   <script>
-    
+    // Initialize Lenis Smooth Scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      infinite: false,
+    });
 
-    // Smooth scrolling for navigation links
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    // GSAP ScrollTrigger integration
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Elite Hero Text Animations
+    gsap.from('#msg1', {
+      opacity: 0,
+      y: 100,
+      duration: 1.5,
+      delay: 0.3,
+      ease: 'power4.out'
+    });
+
+    gsap.from('#msg2', {
+      opacity: 0,
+      y: 100,
+      duration: 1.5,
+      delay: 0.6,
+      ease: 'power4.out'
+    });
+
+    gsap.from('.hero-right .cta-button', {
+      opacity: 0,
+      scale: 0.8,
+      duration: 1,
+      delay: 1.2,
+      ease: 'back.out(1.7)'
+    });
+
+    // Header scroll effect with GSAP
+    let lastScroll = 0;
+    gsap.to('header', {
+      scrollTrigger: {
+        trigger: 'body',
+        start: 'top top',
+        end: '+=100',
+        onUpdate: (self) => {
+          const header = document.querySelector('header');
+          if (self.progress > 0.5) {
+            header.classList.add('scrolled');
+          } else {
+            header.classList.remove('scrolled');
+          }
+        }
+      }
+    });
+
+    // Category Cards Animation
+    gsap.utils.toArray('.category-card').forEach((card, index) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          end: 'bottom 20%',
+          toggleActions: 'play none none reverse'
+        },
+        opacity: 0,
+        y: 80,
+        rotation: -5,
+        duration: 1.2,
+        delay: index * 0.2,
+        ease: 'power3.out'
+      });
+
+      // Hover animation
+      card.addEventListener('mouseenter', () => {
+        gsap.to(card, {
+          y: -15,
+          scale: 1.02,
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+        gsap.to(card.querySelector('img'), {
+          scale: 1.1,
+          duration: 0.6,
+          ease: 'power2.out'
+        });
+      });
+
+      card.addEventListener('mouseleave', () => {
+        gsap.to(card, {
+          y: 0,
+          scale: 1,
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+        gsap.to(card.querySelector('img'), {
+          scale: 1,
+          duration: 0.6,
+          ease: 'power2.out'
+        });
+      });
+    });
+
+    // Product Cards Stagger Animation
+    gsap.utils.toArray('.product-card').forEach((card, index) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        },
+        opacity: 0,
+        y: 60,
+        duration: 1,
+        delay: index * 0.1,
+        ease: 'power3.out'
+      });
+    });
+
+    // Section Titles Animation
+    gsap.utils.toArray('h2').forEach(title => {
+      gsap.from(title, {
+        scrollTrigger: {
+          trigger: title,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        },
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: 'power3.out'
+      });
+    });
+
+    // Parallax effect for images (only for category cards, not product cards)
+    gsap.utils.toArray('.category-card img').forEach((img) => {
+      gsap.to(img, {
+        scrollTrigger: {
+          trigger: img.closest('.category-card'),
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1
+        },
+        y: -30,
+        ease: 'none'
+      });
+    });
+
+    // Newsletter Section Animation
+    gsap.from('.newsletter-content', {
+      scrollTrigger: {
+        trigger: '.newsletter',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      },
+      opacity: 0,
+      x: -80,
+      duration: 1.2,
+      ease: 'power3.out'
+    });
+
+    gsap.from('.newsletter-img-box', {
+      scrollTrigger: {
+        trigger: '.newsletter',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse'
+      },
+      opacity: 0,
+      x: 80,
+      duration: 1.2,
+      ease: 'power3.out'
+    });
+
+    // Product Data
+    const productData = {
+      lips: {
+        title: 'LIPS',
+        image: 'https://static.wixstatic.com/media/c837a6_20d1709d18694123a24f11aad20d4060~mv2.png/v1/fill/w_569,h_741,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/mayagi_a_studio_beauty_photograph_close-up_shot_of_a_woman_with_aad50369-8133-40c2-b9b5-a3.png',
+        description: 'Discover our luxurious lip collection featuring bold colors, long-lasting formulas, and nourishing ingredients. From matte to glossy finishes, find your perfect shade for every occasion.',
+        features: [
+          'Long-lasting 12-hour wear',
+          'Enriched with Vitamin E and natural oils',
+          'Cruelty-free and vegan formulas',
+          'Wide range of 50+ shades',
+          'Hydrating and comfortable feel'
+        ]
+      },
+      lashes: {
+        title: 'LASHES',
+        image: 'https://static.wixstatic.com/media/c837a6_29f10c9e1c52493681865f8930b037f8~mv2.jpg/v1/fill/w_569,h_741,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/camille-brodard-FTMPYMNw_zQ-unsplash.jpg',
+        description: 'Elevate your eye game with our premium lash collection. From dramatic volume to natural length, our mascaras and false lashes deliver stunning results that last all day.',
+        features: [
+          'Volumizing and lengthening formulas',
+          'Smudge-proof and waterproof options',
+          'Premium synthetic and mink lashes',
+          'Easy application and removal',
+          'Ophthalmologist tested'
+        ]
+      },
+      cheeks: {
+        title: 'CHEEKS',
+        image: 'https://static.wixstatic.com/media/c837a6_359086c676a14cd2a80e742aefc1fa32~mv2.jpg/v1/fill/w_569,h_741,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AdobeStock_546816824_edited.jpg',
+        description: 'Add a natural flush or dramatic contour with our blush and bronzer collection. Silky textures blend seamlessly for a radiant, healthy glow that enhances your natural beauty.',
+        features: [
+          'Buildable color intensity',
+          'Finely milled powder formula',
+          'Suitable for all skin tones',
+          'Long-lasting color payoff',
+          'Dermatologist tested and approved'
+        ]
+      }
+    };
+
+    // Category Card Click Handler with Elite Animation
+    document.querySelectorAll('.category-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const category = this.dataset.category;
+        const data = productData[category];
+        
+        if (data) {
+          // Set overlay content
+          document.getElementById('overlayTitle').textContent = data.title;
+          document.getElementById('overlayDescription').textContent = data.description;
+          document.getElementById('overlayImage').src = data.image;
+          
+          const featuresList = document.getElementById('overlayFeatures');
+          featuresList.innerHTML = '';
+          data.features.forEach(feature => {
+            const li = document.createElement('li');
+            li.textContent = feature;
+            featuresList.appendChild(li);
+          });
+          
+          // Show overlay with GSAP animation
+          const overlay = document.getElementById('productOverlay');
+          overlay.classList.add('active');
+          
+          gsap.fromTo(overlay, 
+            { opacity: 0 },
+            { opacity: 1, duration: 0.4, ease: 'power2.out' }
+          );
+          
+          gsap.fromTo('.overlay-content',
+            { scale: 0.9, y: 50 },
+            { scale: 1, y: 0, duration: 0.6, ease: 'back.out(1.7)', delay: 0.1 }
+          );
+          
+          gsap.from('.overlay-details h2', {
+            opacity: 0,
+            y: 30,
+            duration: 0.6,
+            delay: 0.3,
+            ease: 'power3.out'
+          });
+          
+          gsap.from('.overlay-details p', {
+            opacity: 0,
+            y: 20,
+            duration: 0.6,
+            delay: 0.4,
+            ease: 'power3.out'
+          });
+          
+          gsap.from('.overlay-features li', {
+            opacity: 0,
+            x: -20,
+            stagger: 0.1,
+            duration: 0.5,
+            delay: 0.5,
+            ease: 'power2.out'
+          });
+          
+          // Disable body scroll
+          lenis.stop();
+        }
+      });
+    });
+
+    // Close Overlay Function
+    function closeOverlay() {
+      const overlay = document.getElementById('productOverlay');
+      
+      gsap.to(overlay, {
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+          overlay.classList.remove('active');
+          lenis.start();
+        }
+      });
+    }
+
+    // Close overlay on ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeOverlay();
+      }
+    });
+
+    // Smooth scrolling for navigation links with Lenis
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
+          lenis.scrollTo(target, {
+            offset: -100,
+            duration: 1.5
           });
         }
       });
@@ -733,9 +1192,19 @@
     function subscribeNewsletter(event) {
       event.preventDefault();
       const email = event.target.querySelector('input[type="email"]').value;
-      console.log(`Newsletter subscription for: ${email}`);
-      alert(`Thank you for subscribing with ${email}! You'll receive our latest updates.`);
-      event.target.reset();
+      const button = event.target.querySelector('.cta-button');
+      
+      // Animate button
+      gsap.to(button, {
+        scale: 0.95,
+        duration: 0.1,
+        yoyo: true,
+        repeat: 1,
+        onComplete: () => {
+          alert(`Thank you for subscribing with ${email}! You'll receive our latest updates.`);
+          event.target.reset();
+        }
+      });
     }
 
     function showModal(type) {
@@ -755,39 +1224,36 @@
         facebook: 'https://facebook.com/sugaNigacosmetics',
         youtube: 'https://youtube.com/@sugaNigacosmetics'
       };
-      
-      
     }
 
+    // Page load animation
     window.addEventListener('load', () => {
-      document.body.style.opacity = '1';
+      gsap.to('body', {
+        opacity: 1,
+        duration: 0.5
+      });
     });
 
-
-let current = 0;
-let target = 0;
-let ease = 0.09; // smaller = smoother
-
-const body = document.body;
-const main = document.querySelector("main");
-
-function smoothScroll() {
-  current += (target - current) * ease;
-  main.style.transform = `translateY(${-current}px)`;
-  requestAnimationFrame(smoothScroll);
-}
-
-window.addEventListener("scroll", () => {
-  target = window.scrollY;
-});
-
-smoothScroll();
-
-// Prevent jump on load
-body.style.height = main.getBoundingClientRect().height + "px";
-window.addEventListener("resize", () => {
-  body.style.height = main.getBoundingClientRect().height + "px";
-});
+    // Button hover animations
+    document.querySelectorAll('.cta-button').forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        gsap.to(btn, {
+          y: -5,
+          scale: 1.05,
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+      });
+      
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, {
+          y: 0,
+          scale: 1,
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+      });
+    });
   </script>
 </body>
 </html>
